@@ -2,10 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum EnemyType
+{
+    ARCHER, ONEHAND, TWOHAND
+}
+
 public class EnemyManager : Singleton<EnemyManager>
 {
     public int spawnCount = 5;
-    public float spawnDelay = 1;
+    public float spawnDelay = 0.3f;
     int enemyCount = 0;
     public GameObject[] enemyPrefabs;
 
@@ -40,8 +45,36 @@ public class EnemyManager : Singleton<EnemyManager>
         }
     }
 
-    public void EnemyDied(Enemy _enemy)
+    public void OnEnemyDied(Enemy _enemy)
     {
         enemies.Remove(_enemy);
+        Destroy(_enemy.gameObject);
+    }
+
+    void OnDifficultyChange(Difficulty _difficulty)
+    {
+        //if difficulty is easy, set spawn rate to 5
+        if (_difficulty == Difficulty.EASY)
+            spawnCount = 5;
+
+        //if difficulty is medium, set spawn count to 10
+        if (_difficulty == Difficulty.MEDIUM)
+            spawnCount = 10;
+
+        //if dfficulty is hard set spawn count to 15
+        if (_difficulty == Difficulty.HARD)
+            spawnCount = 15;
+    }
+
+    private void OnEnable()
+    {
+        GameEvents.OnEnemyDied += OnEnemyDied;
+        GameEvents.OnDifficultyChange += OnDifficultyChange;
+    }
+
+    private void OnDisable()
+    {
+        GameEvents.OnEnemyDied -= OnEnemyDied;
+        GameEvents.OnDifficultyChange -= OnDifficultyChange;
     }
 }

@@ -4,15 +4,39 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
+    public EnemyType myType;
     public float speed = 1;
     public int health;
 
     // Start is called before the first frame update
     void Start()
     {
+        Initialize();
         //StartCoroutine(Talk());
         //StartCoroutine(MoveRandom());
         StartCoroutine(MoveInDirection());
+    }
+
+    private void Initialize()
+    {
+        //If we are the archer, set speed to 3 and health to 50
+        if(myType == EnemyType.ARCHER)
+        {
+            speed = 3;
+            health = 50;
+        }
+        //If we are the one hand, set speed to 2 and health to 100
+        if (myType == EnemyType.ONEHAND)
+        {
+            speed = 2;
+            health = 100;
+        }            
+        //If we are the two hand, set speed to 1 and health to 1
+        if (myType == EnemyType.TWOHAND)
+        {
+            speed = 1;
+            health = 150;
+        }
     }
 
     private void Update()
@@ -23,7 +47,7 @@ public class Enemy : MonoBehaviour
 
     public void TakeDamage(int _damage)
     {
-        GameManager.instance.Score(1);
+        GameEvents.ReportEnemyHit();
         health -= _damage;
         if (health <= 0)
             Die();
@@ -31,9 +55,8 @@ public class Enemy : MonoBehaviour
 
     public void Die()
     {
-        GameManager.instance.Score(10);
-        EnemyManager.instance.EnemyDied(this);
-        Destroy(this.gameObject);
+        //Report to the game events that this enemy has died
+        GameEvents.ReportEnemyDied(this);
     }
 
 

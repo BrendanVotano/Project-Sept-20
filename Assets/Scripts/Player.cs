@@ -2,17 +2,34 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum Weapon
+{
+    FIRE,
+    WATER,
+    POISON
+}
+
+public enum Status
+{
+    HEALTHY,
+    POISONED,
+    DEAD
+}
+
 public class Player : MonoBehaviour
 {
+    [Header("Player Variables")]
+    public Status playerStatus;
     public float speed;
     private float translation;
     private float straffe;
 
     public int health = 100;
     public string playerName;
-    public bool isDead;
     Material playerMaterial;
 
+    [Header("Weapons")]
+    public Weapon playerWeapon;
     public GameObject[] weapons;
     public GameObject[] projectilePrefabs;
     public Color green, blue, yellow, red;
@@ -21,6 +38,10 @@ public class Player : MonoBehaviour
 
     void Start()
     {
+        //Set our defaults
+        playerStatus = Status.HEALTHY;
+        playerWeapon = Weapon.FIRE;
+
         ChangeWeapon(0);
         playerMaterial = GetComponent<Renderer>().material;
         playerMaterial.color = green;
@@ -82,7 +103,7 @@ public class Player : MonoBehaviour
 
         if (health <= 0)  // Destroy this object when health is less than or equal to 0
         {
-            isDead = true; 
+            playerStatus = Status.DEAD;
         }
     }
 }

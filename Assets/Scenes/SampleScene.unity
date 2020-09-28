@@ -367,7 +367,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnCount: 5
-  spawnDelay: 2
+  spawnDelay: 0.3
   enemyPrefabs:
   - {fileID: 146754, guid: a27aaa9514020fa44bb6081abd5f14fc, type: 3}
   - {fileID: 133616, guid: b806d07906e3ec2418b856b830337dcf, type: 3}
@@ -406,6 +406,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e0c72319f6172543b50bd63ced1ab55, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameState: 3
+  difficulty: 2
   score: 0
 --- !u!1 &963194225
 GameObject:
@@ -538,10 +540,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f9c741301966a045901c10caa99a2a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerStatus: 0
   speed: 2
   health: 100
   playerName: 
-  isDead: 0
+  playerWeapon: 0
   weapons:
   - {fileID: 2022595726}
   - {fileID: 852919624}
