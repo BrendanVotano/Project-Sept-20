@@ -4,20 +4,40 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
+    public float speed = 1;
+    public int health;
+
     // Start is called before the first frame update
     void Start()
     {
-        StartCoroutine(Talk());
+        //StartCoroutine(Talk());
         //StartCoroutine(MoveRandom());
         StartCoroutine(MoveInDirection());
     }
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.S))
-            StopAllCoroutines();
+        if (Input.GetKeyDown(KeyCode.H))
+            TakeDamage(10);
     }
 
+    public void TakeDamage(int _damage)
+    {
+        GameManager.instance.Score(1);
+        health -= _damage;
+        if (health <= 0)
+            Die();
+    }
+
+    public void Die()
+    {
+        GameManager.instance.Score(10);
+        EnemyManager.instance.EnemyDied(this);
+        Destroy(this.gameObject);
+    }
+
+
+    #region Coroutines
     IEnumerator Talk()
     {
         print("Hello...");
@@ -41,11 +61,12 @@ public class Enemy : MonoBehaviour
     {
         for (int i = 0; i < 500; i++)
         {
-            transform.Translate(Vector3.forward * Time.deltaTime);
+            transform.Translate(Vector3.forward * Time.deltaTime * speed);
             yield return null;
         }
         transform.Rotate(Vector3.up * 180);
         yield return new WaitForSeconds(1);
         StartCoroutine(MoveInDirection());        
     }
+    #endregion
 }
