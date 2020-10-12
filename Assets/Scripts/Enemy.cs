@@ -19,23 +19,24 @@ public class Enemy : MonoBehaviour
 
     private void Initialize()
     {
-        //If we are the archer, set speed to 3 and health to 50
-        if(myType == EnemyType.ARCHER)
+        switch(myType)
         {
-            speed = 3;
-            health = 50;
-        }
-        //If we are the one hand, set speed to 2 and health to 100
-        if (myType == EnemyType.ONEHAND)
-        {
-            speed = 2;
-            health = 100;
-        }            
-        //If we are the two hand, set speed to 1 and health to 1
-        if (myType == EnemyType.TWOHAND)
-        {
-            speed = 1;
-            health = 150;
+            case EnemyType.ARCHER:
+                speed = 3;
+                health = 50;
+                break;
+            case EnemyType.ONEHAND:
+                speed = 2;
+                health = 100;
+                break;
+            case EnemyType.TWOHAND:
+                speed = 1;
+                health = 150;
+                break;
+            default:
+                speed = 2;
+                health = 100;
+                break;
         }
     }
 
@@ -72,6 +73,7 @@ public class Enemy : MonoBehaviour
         print("I forget");
     }
 
+    //I added a fnction to get the enemy to move randomly
     IEnumerator MoveRandom()
     {
         Vector3 newPos = new Vector3(Random.Range(-5f,5f), 0, Random.Range(-5f, 5f));
@@ -84,6 +86,7 @@ public class Enemy : MonoBehaviour
     {
         for (int i = 0; i < 500; i++)
         {
+            //Tried to instantiate at random points but didn't work as intended
             transform.Translate(Vector3.forward * Time.deltaTime * speed);
             yield return null;
         }

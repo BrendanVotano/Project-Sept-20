@@ -16,12 +16,6 @@ public class EnemyManager : Singleton<EnemyManager>
 
     public List<Enemy> enemies;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        StartCoroutine(SpawnWithDelay(spawnDelay));
-    }
-
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.P))
@@ -53,28 +47,46 @@ public class EnemyManager : Singleton<EnemyManager>
 
     void OnDifficultyChange(Difficulty _difficulty)
     {
-        //if difficulty is easy, set spawn rate to 5
-        if (_difficulty == Difficulty.EASY)
-            spawnCount = 5;
+        switch (_difficulty)
+        {
+            case Difficulty.EASY:   //if difficulty is easy, set spawn rate to 5
+                spawnCount = 5;     
+                break;
+            case Difficulty.MEDIUM: //if difficulty is medium, set spawn count to 10
+                spawnCount = 10;
+                break;
+            case Difficulty.HARD:   //if dfficulty is hard set spawn count to 15
+                spawnCount = 15;
+                break;
+            default:
+                break;
+        }        
+    }
 
-        //if difficulty is medium, set spawn count to 10
-        if (_difficulty == Difficulty.MEDIUM)
-            spawnCount = 10;
-
-        //if dfficulty is hard set spawn count to 15
-        if (_difficulty == Difficulty.HARD)
-            spawnCount = 15;
+    void OnGameStateChange(GameState _gameState)
+    {
+        switch(_gameState)
+        {
+            case GameState.INGAME:
+                StartCoroutine(SpawnWithDelay(spawnDelay));
+                break;
+            default:
+                StopAllCoroutines();
+                break;
+        }
     }
 
     private void OnEnable()
     {
         GameEvents.OnEnemyDied += OnEnemyDied;
         GameEvents.OnDifficultyChange += OnDifficultyChange;
+        GameEvents.OnGameStateChange += OnGameStateChange;
     }
 
     private void OnDisable()
     {
         GameEvents.OnEnemyDied -= OnEnemyDied;
         GameEvents.OnDifficultyChange -= OnDifficultyChange;
+        GameEvents.OnGameStateChange -= OnGameStateChange;
     }
 }

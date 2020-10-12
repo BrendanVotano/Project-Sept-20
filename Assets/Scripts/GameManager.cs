@@ -25,6 +25,7 @@ public class GameManager : Singleton<GameManager>
     private void Start()
     {
         gameState = GameState.TITLE;
+        GameEvents.ReportGameStateChange(gameState);
         GameEvents.ReportDifficultyChange(difficulty);
     }
 
@@ -54,5 +55,15 @@ public class GameManager : Singleton<GameManager>
     void OnEnemyDied(Enemy _enemy)
     {
         Score(10);
+    }
+
+    private void Update()
+    {
+       
+        if(Input.GetKeyDown(KeyCode.G))
+        {
+            gameState = GameState.INGAME;
+            GameEvents.ReportGameStateChange(gameState);
+        }
     }
 }
