@@ -7,6 +7,11 @@ public enum EnemyType
     ARCHER, ONEHAND, TWOHAND
 }
 
+public enum PatrolType
+{
+    LINEAR, RANDOM
+}
+
 public class EnemyManager : Singleton<EnemyManager>
 {
     public int spawnCount = 5;
@@ -15,6 +20,8 @@ public class EnemyManager : Singleton<EnemyManager>
     public GameObject[] enemyPrefabs;
 
     public List<Enemy> enemies;
+
+    public List<GameObject> waypoints;
 
     private void Update()
     {

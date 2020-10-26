@@ -1,22 +1,31 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class Enemy : MonoBehaviour
 {
     public EnemyType myType;
+    public PatrolType patrolType;
     public float speed = 1;
     public int health;
     Animator anim;
+    NavMeshAgent agent;
+    List<GameObject> waypoints;
+    int currentWaypoint = 0;
 
     // Start is called before the first frame update
     void Start()
     {
         anim = GetComponent<Animator>();
+        agent = GetComponent<NavMeshAgent>();
+        waypoints = EnemyManager.instance.waypoints;
         Initialize();
         //StartCoroutine(Talk());
         //StartCoroutine(MoveRandom());
-        StartCoroutine(MoveInDirection());
+        //StartCoroutine(MoveInDirection());
+        currentWaypoint = Random.Range(0, waypoints.Count);
+        agent.SetDestination(waypoints[currentWaypoint].transform.position);
     }
 
     private void Initialize()
@@ -46,6 +55,22 @@ public class Enemy : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.H))
             TakeDamage(10);
+
+        Patrol();
+    }
+
+    void Patrol()
+    {
+        float dist = Vector3.Distance(transform.position, waypoints[currentWaypoint].transform.position);
+        if (dist < 0.1f)
+        {
+            if (patrolType == PatrolType.LINEAR)
+                currentWaypoint = currentWaypoint < waypoints.Count - 1 ? currentWaypoint += 1 : 0;
+            else
+                currentWaypoint = Random.Range(0, waypoints.Count);
+
+            agent.SetDestination(waypoints[currentWaypoint].transform.position);
+        }
     }
 
     public void TakeDamage(int _damage)
