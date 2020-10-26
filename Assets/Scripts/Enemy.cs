@@ -7,10 +7,12 @@ public class Enemy : MonoBehaviour
     public EnemyType myType;
     public float speed = 1;
     public int health;
+    Animator anim;
 
     // Start is called before the first frame update
     void Start()
     {
+        anim = GetComponent<Animator>();
         Initialize();
         //StartCoroutine(Talk());
         //StartCoroutine(MoveRandom());
@@ -52,14 +54,43 @@ public class Enemy : MonoBehaviour
         health -= _damage;
         if (health <= 0)
             Die();
+        else
+        {
+            int rnd = Random.Range(1, 4);
+            switch(rnd)
+            {
+                case 1:
+                    anim.SetTrigger("Hit1");
+                    break;
+                case 2:
+                    anim.SetTrigger("Hit2");
+                    break;
+                case 3:
+                    anim.SetTrigger("Hit3");
+                    break;
+            }
+        }
+            
     }
 
     public void Die()
     {
         //Report to the game events that this enemy has died
         GameEvents.ReportEnemyDied(this);
+
+        //Get a random number, append it to the animation trigger name and set the animation to play
+        int rnd = Random.Range(1, 4);
+        anim.SetTrigger("Death" + rnd.ToString());
     }
 
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.collider.CompareTag("Projectile"))
+        {
+            TakeDamage(10);
+            Destroy(collision.gameObject);
+        }
+    }
 
     #region Coroutines
     IEnumerator Talk()

@@ -2014,6 +2014,7 @@ GameObject:
   - component: {fileID: 403846}
   - component: {fileID: 9550666}
   - component: {fileID: 6233570320842655022}
+  - component: {fileID: -8848602625099926249}
   m_Layer: 0
   m_Name: Skeleton_F
   m_TagString: Untagged
@@ -2049,7 +2050,7 @@ Animator:
   m_GameObject: {fileID: 185486}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 20300ac630e0fcd4dbab63a9b39cdafa, type: 3}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 25e86ce4fbc73ec428e5a85c79d9f8c9, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
   m_ApplyRootMotion: 1
@@ -2073,6 +2074,20 @@ MonoBehaviour:
   myType: 1
   speed: 1
   health: 100
+--- !u!136 &-8848602625099926249
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 185486}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.3
+  m_Height: 1.6
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.8, z: 0}
 --- !u!1 &185512
 GameObject:
   m_ObjectHideFlags: 0

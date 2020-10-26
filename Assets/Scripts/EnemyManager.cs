@@ -42,7 +42,7 @@ public class EnemyManager : Singleton<EnemyManager>
     public void OnEnemyDied(Enemy _enemy)
     {
         enemies.Remove(_enemy);
-        Destroy(_enemy.gameObject);
+        Destroy(_enemy.gameObject, 2);
     }
 
     void OnDifficultyChange(Difficulty _difficulty)
