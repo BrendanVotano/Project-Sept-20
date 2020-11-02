@@ -9,16 +9,20 @@ public class Enemy : MonoBehaviour
     public PatrolType patrolType;
     public float speed = 1;
     public int health;
+    public float detectDistance = 8;
     Animator anim;
     NavMeshAgent agent;
     List<GameObject> waypoints;
     int currentWaypoint = 0;
+    GameObject player;
+    public float undetectTimer = 5;
 
     // Start is called before the first frame update
     void Start()
     {
         anim = GetComponent<Animator>();
         agent = GetComponent<NavMeshAgent>();
+        player = GameObject.FindWithTag("Player");
         waypoints = EnemyManager.instance.waypoints;
         Initialize();
         //StartCoroutine(Talk());
@@ -49,6 +53,7 @@ public class Enemy : MonoBehaviour
                 health = 100;
                 break;
         }
+        patrolType = PatrolType.RANDOM;
     }
 
     private void Update()
@@ -61,15 +66,58 @@ public class Enemy : MonoBehaviour
 
     void Patrol()
     {
-        float dist = Vector3.Distance(transform.position, waypoints[currentWaypoint].transform.position);
-        if (dist < 0.1f)
+        float distToPlayer = Vector3.Distance(transform.position, player.transform.position);
+        if(distToPlayer <= detectDistance)
         {
-            if (patrolType == PatrolType.LINEAR)
-                currentWaypoint = currentWaypoint < waypoints.Count - 1 ? currentWaypoint += 1 : 0;
-            else
-                currentWaypoint = Random.Range(0, waypoints.Count);
+            if (Physics.Linecast(transform.position, player.transform.position, out RaycastHit hit))
+            {
+                if (hit.collider.CompareTag("Player"))
+                {
+                    if (patrolType != PatrolType.CHASE)
+                    {
+                        patrolType = PatrolType.DETECT;
+                    }
+                }
+            }
+        }
 
-            agent.SetDestination(waypoints[currentWaypoint].transform.position);
+        switch(patrolType)
+        {
+            case PatrolType.CHASE:
+                agent.SetDestination(player.transform.position);
+                if (distToPlayer > detectDistance)
+                    patrolType = PatrolType.DETECT;
+                break;
+            case PatrolType.DETECT:
+                agent.SetDestination(transform.position);
+                undetectTimer -= Time.deltaTime;
+                if(undetectTimer <= 0)
+                {
+                    if (distToPlayer <= detectDistance)
+                    {
+                        patrolType = PatrolType.CHASE;
+                        undetectTimer = 5;
+                    }
+                    else
+                    {
+                        patrolType = PatrolType.RANDOM;
+                        agent.SetDestination(waypoints[currentWaypoint].transform.position);
+                    }
+                }
+                break;
+            default:
+                float dist = Vector3.Distance(transform.position, waypoints[currentWaypoint].transform.position);
+                if (dist < 0.1f)
+                {
+                    if (patrolType == PatrolType.LINEAR)
+                        currentWaypoint = currentWaypoint < waypoints.Count - 1 ? currentWaypoint += 1 : 0;
+                    else
+                        currentWaypoint = Random.Range(0, waypoints.Count);
+
+                    agent.SetDestination(waypoints[currentWaypoint].transform.position);
+                }
+                undetectTimer = 5;
+                break;
         }
     }
 
