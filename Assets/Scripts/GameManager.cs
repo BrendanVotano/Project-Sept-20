@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public enum GameState
 {
@@ -65,5 +66,30 @@ public class GameManager : Singleton<GameManager>
             gameState = GameState.INGAME;
             GameEvents.ReportGameStateChange(gameState);
         }
+    }
+
+    public void LoadLevel()
+    {
+        StartCoroutine(LoadScene());
+    }
+
+    private IEnumerator LoadScene()
+    {
+        // Start loading the scene
+        AsyncOperation asyncLoadLevel = SceneManager.LoadSceneAsync("MainGame", LoadSceneMode.Single);
+        // Wait until the level finish loading
+        while (!asyncLoadLevel.isDone)
+            yield return null;
+        // Wait a frame so every Awake and Start method is called
+        yield return new WaitForEndOfFrame();
+
+        gameState = GameState.INGAME;
+        GameEvents.ReportDifficultyChange(difficulty);
+        GameEvents.ReportGameStateChange(gameState);
+    }
+
+    public void QuitGame()
+    {
+        Application.Quit();
     }
 }
