@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using TMPro;
 
 public enum GameState
 {
@@ -18,21 +20,41 @@ public enum Difficulty
 
 public class GameManager : Singleton<GameManager>
 {
+    public string playerName = "Player One";
+
     public GameState gameState;
     public Difficulty difficulty;
 
     public int score = 0;
+    public TMP_Dropdown difficultyDropdown;
+    public TMP_InputField playerNameInput;
 
     private void Start()
     {
         gameState = GameState.TITLE;
         GameEvents.ReportGameStateChange(gameState);
         GameEvents.ReportDifficultyChange(difficulty);
+        //Score(0);
+    }
+
+    public void ChangeDifficulty(int _diff)
+    {
+        //Method One
+        difficulty = (Difficulty)_diff;
+
+        //Method Two... too long.
+        string st = difficultyDropdown.options[_diff].text;
+    }
+
+    public void UpdatePlayerName(string _name)
+    {
+        playerName = _name;
     }
 
     public void Score (int _amount)
     {
         score += _amount;
+        UIManager.instance.scoreText.text = playerName + "'s score: " + score.ToString();
     }
 
 
