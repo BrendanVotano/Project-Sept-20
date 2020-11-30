@@ -16,6 +16,7 @@ public class Enemy : MonoBehaviour
     int currentWaypoint = 0;
     GameObject player;
     public float undetectTimer = 5;
+    AudioSource audioSource;
 
     // Start is called before the first frame update
     void Start()
@@ -30,6 +31,7 @@ public class Enemy : MonoBehaviour
         //StartCoroutine(MoveInDirection());
         currentWaypoint = Random.Range(0, waypoints.Count);
         agent.SetDestination(waypoints[currentWaypoint].transform.position);
+        audioSource = GetComponent<AudioSource>();
     }
 
     private void Initialize()
@@ -142,8 +144,15 @@ public class Enemy : MonoBehaviour
                     anim.SetTrigger("Hit3");
                     break;
             }
+            
+            audioSource.PlayOneShot(AudioManager.instance.GetHitSound());
         }
             
+    }
+
+    public void Footstep()
+    {
+        audioSource.PlayOneShot(AudioManager.instance.GetFootStepSound());
     }
 
     public void Die()
@@ -151,6 +160,8 @@ public class Enemy : MonoBehaviour
         //Report to the game events that this enemy has died
         GameEvents.ReportEnemyDied(this);
 
+        audioSource.clip = AudioManager.instance.GetDieSound();
+        audioSource.Play();
         //Get a random number, append it to the animation trigger name and set the animation to play
         int rnd = Random.Range(1, 4);
         anim.SetTrigger("Death" + rnd.ToString());

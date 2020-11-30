@@ -36,6 +36,12 @@ public class Player : MonoBehaviour
 
     public Transform firingPoint;
 
+    [Header("Audio Effects")]
+    AudioSource audioSource;
+    public float stepRate = 0.5f;
+    public float stepCoolDown;
+    
+
     void Start()
     {
         //Set our defaults
@@ -45,6 +51,8 @@ public class Player : MonoBehaviour
         ChangeWeapon(0);
         playerMaterial = GetComponent<Renderer>().material;
         playerMaterial.color = green;
+
+        audioSource = GetComponent<AudioSource>();
     }
 
 
@@ -66,17 +74,20 @@ public class Player : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha3))
             ChangeWeapon(2);
 
+        if (Input.GetButtonDown("Fire1"))
+            FireWeapon();
+
         translation = Input.GetAxis("Vertical") * speed * Time.deltaTime;
         straffe = Input.GetAxis("Horizontal") * speed * Time.deltaTime;
         transform.Translate(straffe, 0, translation);
 
-        //if(Input.GetKeyDown(KeyCode.H))
-        //{
-        //    TakeDamage(10);
-        //}
-
-        if (Input.GetButtonDown("Fire1"))
-            FireWeapon();
+        stepCoolDown -= Time.deltaTime;
+        if((translation != 0 || straffe != 0) && stepCoolDown < 0)
+        {
+            audioSource.pitch = Random.Range(0.85f, 1.15f);
+            audioSource.PlayOneShot(AudioManager.instance.playerFootStep);
+            stepCoolDown = stepRate;
+        }
     }
 
     void FireWeapon()
